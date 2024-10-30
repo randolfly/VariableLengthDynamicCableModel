@@ -63,9 +63,10 @@ end
 function u(x::Vector{Float64}, l::Real)
     xe = x[end]
     _u = 0
+    x̃ = l / xe
 
     for i = 1:N
-        _u += Φ(i, l / xe) * x[i]
+        _u += Φ(i, x̃) * x[i]
     end
 
     return _u
@@ -74,9 +75,10 @@ end
 function ∂ₓu(x::Vector{Float64}, l::Real)
     xe = x[end]
     dx_u = 0
+    x̃ = l / xe
 
     for i = 1:N
-        dx_u += ∂ₓΦ(i, l / xe) * x[i] / xe
+        dx_u += ∂ₓΦ(i, x̃) * x[i] / xe
     end
 
     return dx_u
@@ -86,7 +88,7 @@ function ∂ₜu(x::Vector{Float64}, dx::Vector{Float64}, l::Real)
     _∂ₜu = 0
     xe = x[end]
     dxe = dx[end]
-    x̃ = 1 - l / xe
+    x̃ = l / xe
 
     for i in 1:N
         _∂ₜu += Φ(i, x̃) * dx[i] - x̃ * dxe / xe * ∂ₓΦ(i, x̃) * x[i]
@@ -98,8 +100,9 @@ end
 function ∂ₓₓu(x::Vector{Float64}, l::Real)
     xe = x[end]
     ddx_u = 0
+    x̃ = l / xe
     for i in 1:N
-        ddx_u += ∂ₓₓΦ(i, l / xe) * x[i] / xe^2
+        ddx_u += ∂ₓₓΦ(i, x̃) * x[i] / xe^2
     end
 
     return ddx_u
@@ -109,7 +112,7 @@ function ∂ₓₜu(x::Vector{Float64}, dx::Vector{Float64}, l::Real)
     _∂ₓₜu = 0
     xe = x[end]
     dxe = dx[end]
-    x̃ = 1 - l / xe
+    x̃ = l / xe
 
     for i in 1:N
         _∂ₓₜu += xe * ∂ₓΦ(i, x̃) * dx[i]
@@ -141,7 +144,7 @@ end
 
 function θp(pulley_id::Integer, x::Vector{Float64})
     xe = x[end]
-    _θp = (-xe + u(x, xe - lp[pulley_id]) + L) / rp[pulley_id]
+    _θp = (L - xe + u(x, xe - lp[pulley_id])) / rp[pulley_id]
     return _θp
 end
 
